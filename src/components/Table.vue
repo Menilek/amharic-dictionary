@@ -13,8 +13,8 @@ const filteredWords = computed(() => {
   });
 });
 
-const hiddenGeez = ref("");
-const hiddenCategory = ref("");
+const hiddenGeez = ref();
+const hiddenCategory = ref();
 
 const favourites = ref();
 
@@ -43,13 +43,12 @@ const getImagePath = (isFavourite: boolean) => {
   return isFavourite ? solidStar : emptyStar;
 }
 
-const toggleRow = (e) => {
-  const rowID = e.target.getAttribute('id');
-  const rowGeez = e.target.getAttribute('value');
-  const rowCategory = e.target.getAttribute('name');
+const toggleRow = (e: Event) => {
+  const btn = e.currentTarget as HTMLButtonElement;
+  const rowGeez = btn.getAttribute('value');
+  const rowCategory = btn.getAttribute('name');
   console.log(rowGeez)
   console.log(rowCategory)
-  const btn = document.getElementById(rowID) as HTMLButtonElement;
   if (btn.textContent === "⯅") {
     btn.textContent = "▼";
     showRow.value = false;
@@ -61,9 +60,9 @@ const toggleRow = (e) => {
   }
 }
 
-const toggleFavourite = (e) => {
-  const starID = e.target.getAttribute('id');
+const toggleFavourite = (e: Event) => {
   const starImage = e.currentTarget as HTMLImageElement;
+  const starID = starImage.getAttribute('id');
   const classList = starImage.classList;
   if (classList.contains('far')) {
     starImage.classList.remove('far');
