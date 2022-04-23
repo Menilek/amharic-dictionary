@@ -1,13 +1,35 @@
 <script setup lang="ts">
 import { words } from "../words";
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
+import { reject } from 'lodash';
 import { Modal } from "bootstrap";
+import { Word } from '@/types';
 import WordModal from './modals/WordModal.vue';
 import CsvModal from './modals/CsvModal.vue';
 import FavouriteModal from './modals/FavouriteModal.vue';
 
+//TODO: ADD SOLID STARS TO WORDS MARKED AS FAVOURITES 
+const fetchFavourites = () => {
+  const localFavourites = localStorage.getItem('Favourites') as string;
+  let faves = JSON.parse(localFavourites);
+  if (faves === null) {
+    faves = [];
+  }
+  favourites.value = faves;
+};
+
+const displayFavouriteStars = () => {
+  // if amharic in favourites
+  // return solid star
+  // else return regular star
+
+}
+
+onMounted(() => {
+  fetchFavourites();
+})
 const wordOfInterest = ref({
   amharic: "",
   category: "",
@@ -51,9 +73,40 @@ const getImagePath = (isFavourite: boolean) => {
   return isFavourite ? solidStar : emptyStar;
 }
 
+const isAmharicWordPresent = (amharic: string) => {
+  return favourites.value.find((e: Word) => e['amharic'] === amharic) ? true : false;
+};
+
 const toggleFavourite = (e: Event) => {
   const starImage = e.currentTarget as HTMLImageElement;
   const starID = starImage.getAttribute('id');
+  const wordObj = words.filter(word => word._id === starID);
+  interface WORD {
+        english: string,
+        amharic: string,
+    }
+  const word = { english: wordObj[0].english, amharic: wordObj[0].amharic };
+  const isArrayAndEmpty = () => {
+    return Array.isArray(favourites) && !favourites.value.length;
+  };
+
+  let wordPresent = isAmharicWordPresent(word.amharic);
+  console.log(wordPresent)
+  if (!wordPresent) {
+    const newFavourites = (favourites: Array<WORD>) => favourites.concat(word);
+    const newFaves = newFavourites(favourites.value);
+    // generateFavouriteHeader(newFaves.length);
+    favourites.value = newFaves;
+    const favouritesString = JSON.stringify(newFaves);
+    localStorage.setItem('Favourites', favouritesString);
+  } else {
+    let newFaves = reject(favourites.value, (fave: Word) => fave['amharic'] === word['amharic']);
+    // generateFavouriteHeader(newFaves.length);
+    favourites.value = [...newFaves];
+    const favouritesString = JSON.stringify(newFaves);
+    localStorage.setItem('Favourites', favouritesString);
+  }
+
   const classList = starImage.classList;
   if (classList.contains('far')) {
     starImage.classList.remove('far');
@@ -63,6 +116,28 @@ const toggleFavourite = (e: Event) => {
     starImage.classList.remove('fas');
     starImage.classList.add('far');
     starImage.src = `${getImagePath(false)}`;
+  }
+}
+
+// const getFavouriteIcon = (amharic: string) => {
+//   // if amharic in favourites
+//   // return solid star
+//   // else return regular star
+//   const solidStar = new URL("../assets/star-solid.svg", import.meta.url);
+//   const emptyStar = new URL("../assets/star-regular.svg", import.meta.url);
+//   if (isAmharicWordPresent(amharic)) {
+//     return solidStar;
+//   } else {
+//     return emptyStar;
+//   }
+// }
+
+const getFavouriteClassNames = (amharic: string) => {
+  //far fa-star
+  if (isAmharicWordPresent(amharic)) {
+    return 'fas fa-star';
+  } else {
+    return 'far fa-star';
   }
 }
 
@@ -96,7 +171,7 @@ const viewWord = (e: Event) => {
 
   <CsvModal />
 
-  <FavouriteModal />
+  <FavouriteModal :favourites=favourites />
 
   <table class="table table-hover table-responsive table-striped table-sm">
     <thead>
