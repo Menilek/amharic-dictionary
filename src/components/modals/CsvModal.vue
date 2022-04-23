@@ -14,7 +14,7 @@ const csvInput = ref();
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <textarea rows="4" cols="40" name="csvText"
+                    <textarea rows="4" cols="35" name="csvText"
                         placeholder="English,Amharic,Geez,Category&#10;Dog,Wusha,ዉሻ,Noun" v-model="csvInput"></textarea>
                 </div>
                 <div class="modal-footer">
