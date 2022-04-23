@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import { defineProps, PropType } from "vue";
+  import { Word } from '../../types';
 
+  const props = defineProps({
+      favourites: {
+          required: true,
+          type: Array as PropType<Word[]>
+      }
+  })
 </script>
 
 <template>
@@ -18,10 +26,10 @@
                             <th>English</th>
                             <th>Amharic</th>
                         </thead>
-                        <tbody>
-                            <td>1</td>
-                            <td>Dog</td>
-                            <td>Wusha</td>
+                        <tbody v-for="word in favourites" :key="word._id">
+                            <td>{{ favourites.indexOf(word) + 1 }}</td>
+                            <td>{{ word.english }}</td>
+                            <td>{{ word.amharic }}</td>
                         </tbody>
                     </table>
                 </div>
