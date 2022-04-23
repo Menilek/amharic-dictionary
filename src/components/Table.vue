@@ -1,20 +1,28 @@
 <script setup lang="ts">
 import { words } from "../words";
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.min.js";
+import { Modal } from "bootstrap";
+import WordModal from './modals/WordModal.vue';
+import CsvModal from './modals/CsvModal.vue';
+import FavouriteModal from './modals/FavouriteModal.vue';
 
-const showRow = ref(false);
+const wordOfInterest = ref({
+  amharic: "",
+  category: "",
+  english: "",
+  geez: "",
+  _id: ""
+});
 
 const query = ref("");
-const searchParams = ['english', 'amharic', 'geez'];
 
 const filteredWords = computed(() => {
   return words.filter((word) => {
-      return word.english.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1 || word.amharic.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1;
+    return word.english.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1 || word.amharic.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1;
   });
 });
-
-const hiddenGeez = ref();
-const hiddenCategory = ref();
 
 const favourites = ref();
 
@@ -30,7 +38,7 @@ const toggleFavouriteColumn = () => {
 }
 
 const toggleExpander = () => {
-if (expanderCol.value === "Show") {
+  if (expanderCol.value === "Show") {
     expanderCol.value = "Hide"
   } else {
     expanderCol.value = "Show"
@@ -43,23 +51,6 @@ const getImagePath = (isFavourite: boolean) => {
   return isFavourite ? solidStar : emptyStar;
 }
 
-const toggleRow = (e: Event) => {
-  const btn = e.currentTarget as HTMLButtonElement;
-  const rowGeez = btn.getAttribute('value');
-  const rowCategory = btn.getAttribute('name');
-  console.log(rowGeez)
-  console.log(rowCategory)
-  if (btn.textContent === "⯅") {
-    btn.textContent = "▼";
-    showRow.value = false;
-  } else {
-    btn.textContent = "⯅";
-    hiddenGeez.value = rowGeez;
-    hiddenCategory.value = rowCategory;
-    showRow.value = true;
-  }
-}
-
 const toggleFavourite = (e: Event) => {
   const starImage = e.currentTarget as HTMLImageElement;
   const starID = starImage.getAttribute('id');
@@ -67,42 +58,55 @@ const toggleFavourite = (e: Event) => {
   if (classList.contains('far')) {
     starImage.classList.remove('far');
     starImage.classList.add('fas');
-    starImage.src=`${getImagePath(true)}`;
+    starImage.src = `${getImagePath(true)}`;
   } else {
     starImage.classList.remove('fas');
     starImage.classList.add('far');
-    starImage.src=`${getImagePath(false)}`;
+    starImage.src = `${getImagePath(false)}`;
   }
+}
+
+const viewWord = (e: Event) => {
+  const img = e.currentTarget as HTMLImageElement;
+  const wordID = img.getAttribute('id');
+  const wordObj = words.filter(word => word._id === wordID);
+  wordOfInterest.value = wordObj[0];
 }
 </script>
 
 <template>
-<div class="dictionary-inputs">
-  <div class="input-margin">
-    <input
-      name="search-form"
-      class="search-query"
-      placeholder="Search for..."
-      v-model="query"
-    />
+  <div class="dictionary-inputs">
+    <div class="input-margin">
+      <input type="text" name="search-form" class="search-query" placeholder="Search for..." v-model="query" />
+    </div>
+    <div class="input-margin">
+      <button class="btn btn-info" @click="toggleFavouriteColumn">{{ faveCol }} Favourites</button>
+      <button class="btn btn-info pad-left" @click="toggleExpander">{{ expanderCol }} Expander</button>
+    </div>
+    <div class="input-margin">
+      <button class="btn btn-primary">Add Word</button>
+      <button class="btn btn-primary pad-left" data-bs-toggle="modal" data-bs-target="#csvModal">Add CSV</button>
+    </div>
+    <div class="input-margin">
+      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#favouriteModal">Browse Favourites</button>
+    </div>
   </div>
-  <div class="input-margin">
-    <button class="btn btn-info" @click="toggleFavouriteColumn">{{ faveCol }} Favourites</button>
-    <button class="btn btn-info pad-left" @click="toggleExpander">{{ expanderCol }} Expander</button>
-  </div>
-  <div class="input-margin">
-    <button class="btn btn-primary">Browse Favourites</button>
-    <button class="btn btn-primary pad-left">Add Word</button>
-    <button class="btn btn-primary pad-left">Dump CSV</button>
-  </div>
-</div>
+
+  <WordModal :word=wordOfInterest />
+
+  <CsvModal />
+
+  <FavouriteModal />
+
   <table class="table table-hover table-responsive table-striped table-sm">
     <thead>
       <tr>
         <th v-show='faveCol === "Hide"'>
-          <img class="star-icon gold-star fas fa-star" src="../assets/star-solid.svg" alt="Star icon" />
+          <img class="fa-icon gold-star fas fa-star" src="../assets/star-solid.svg" alt="Star icon" />
         </th>
-        <th v-show='expanderCol === "Hide"' scope="col">▼</th>
+        <th v-show='expanderCol === "Hide"'>
+          <img class="fa-icon white-icon fa-solid fa-eye" src="../assets/eye-solid.svg" />
+        </th>
         <th scope="col">English</th>
         <th scope="col">Amharic</th>
       </tr>
@@ -110,19 +114,16 @@ const toggleFavourite = (e: Event) => {
     <tbody v-for="word in filteredWords" :key="word._id">
       <tr class="table-active">
         <td v-show='faveCol === "Hide"'>
-          <img v-on:click="toggleFavourite" :id="word._id" class="star-icon white-star star-action far fa-star" src="../assets/star-regular.svg" alt="Star icon" />
+          <img @click="toggleFavourite" :id="word._id" class="star-icon white-icon icon-action far fa-star"
+            src="../assets/star-regular.svg" alt="Star icon" />
         </td>
-        <button v-show='expanderCol === "Hide"' class="btn btn-primary" v-on:click="toggleRow" :value="word.geez" :name="word.category" :id="word._id">▼</button>
+        <td v-show='expanderCol === "Hide"' data-bs-toggle="modal" data-bs-target="#viewModal">
+          <img @click="viewWord" :id="word._id"
+            class="fa-icon white-icon fa-solid fa-up-right-and-down-left-from-center"
+            src="../assets/up-right-and-down-left-from-center-solid.svg" />
+        </td>
         <td>{{ word.english }}</td>
         <td>{{ word.amharic }}</td>
-        <!-- <td rowspan="3">
-          <table class="table table-hover table-responsive" v-show="showRow">
-            <tr>
-              <td>{{ word.geez }}</td>
-              <td>{{ word.category }}</td>
-            </tr>
-          </table>
-        </td> -->
       </tr>
     </tbody>
   </table>
@@ -132,16 +133,20 @@ const toggleFavourite = (e: Event) => {
 .gold-star {
   filter: invert(83%) sepia(44%) saturate(1278%) hue-rotate(356deg) brightness(98%) contrast(106%);
 }
-.star-icon {
+
+.fa-icon {
   height: 25px;
   width: 25px;
 }
-.white-star {
+
+.white-icon {
   filter: invert(100%) sepia(4%) saturate(18%) hue-rotate(144deg) brightness(104%) contrast(100%);
 }
-.star-action {
+
+.icon-action {
   cursor: pointer;
 }
+
 .dictionary-inputs {
   position: flex;
   align-items: center;
@@ -149,10 +154,16 @@ const toggleFavourite = (e: Event) => {
   grid-gap: 20px;
   text-align: center;
 }
+
 .input-margin {
   margin: 0px 6px 10px;
 }
+
 .pad-left {
   margin-left: 9px;
+}
+
+.modal-text {
+  color: white;
 }
 </style>
