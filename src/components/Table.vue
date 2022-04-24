@@ -10,7 +10,7 @@ import WordModal from './modals/WordModal.vue';
 import CsvModal from './modals/CsvModal.vue';
 import FavouriteModal from './modals/FavouriteModal.vue';
 
-//TODO: ADD SOLID STARS TO WORDS MARKED AS FAVOURITES 
+//TODO: ADD SOLID STARS TO WORDS MARKED AS FAVOURITES
 const fetchFavourites = () => {
   const localFavourites = localStorage.getItem('Favourites') as string;
   let faves = JSON.parse(localFavourites);
@@ -189,7 +189,7 @@ const viewWord = (e: Event) => {
     <tbody v-for="word in filteredWords" :key="word._id">
       <tr class="table-active">
         <td v-show='faveCol === "Hide"'>
-          <img @click="toggleFavourite" :id="word._id" class="star-icon white-icon icon-action far fa-star"
+          <img @click="toggleFavourite" :id="word._id" class="fa-icon star-icon white-icon icon-action far fa-star"
             src="../assets/star-regular.svg" alt="Star icon" />
         </td>
         <td v-show='expanderCol === "Hide"' data-bs-toggle="modal" data-bs-target="#viewModal">
