@@ -46,7 +46,7 @@ const wordOfInterest = ref({
 const query = ref("");
 
 const filteredWords = computed(() => {
-  return words.filter((word) => {
+  return words.filter((word: Word) => {
     return word.english.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1 || word.amharic.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1;
   });
 });
@@ -85,7 +85,7 @@ const isAmharicWordPresent = (amharic: string) => {
 const toggleFavourite = (e: Event) => {
   const starImage = e.currentTarget as HTMLImageElement;
   const starID = starImage.getAttribute('id');
-  const wordObj = words.filter(word => word._id === starID);
+  const wordObj = words.filter((word: { _id: string|null; }) => word._id === starID);
   interface WORD {
         english: string,
         amharic: string,
@@ -149,7 +149,7 @@ const getFavouriteClassNames = (amharic: string) => {
 const viewWord = (e: Event) => {
   const img = e.currentTarget as HTMLImageElement;
   const wordID = img.getAttribute('id');
-  const wordObj = words.filter(word => word._id === wordID);
+  const wordObj = words.filter((word: { _id: string|null; }) => word._id === wordID);
   wordOfInterest.value = wordObj[0];
 }
 </script>
