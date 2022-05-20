@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { words } from "../words";
-import { ref, computed, onMounted } from 'vue';
+// import { words } from "../words";
+import { ref, computed, onBeforeMount } from 'vue';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import { reject } from 'lodash';
@@ -9,6 +9,10 @@ import { Word } from '@/types';
 import WordModal from './modals/WordModal.vue';
 import CsvModal from './modals/CsvModal.vue';
 import FavouriteModal from './modals/FavouriteModal.vue';
+import { getWords } from '../../utils/util'
+
+const wordsPayload = await getWords();
+const words = wordsPayload.data;
 
 //TODO: ADD SOLID STARS TO WORDS MARKED AS FAVOURITES
 const fetchFavourites = () => {
@@ -27,9 +31,10 @@ const displayFavouriteStars = () => {
 
 }
 
-onMounted(() => {
+onBeforeMount(() => {
   fetchFavourites();
 })
+
 const wordOfInterest = ref({
   amharic: "",
   category: "",

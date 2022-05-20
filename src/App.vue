@@ -3,7 +3,14 @@ import Table from './components/Table.vue'
 </script>
 
 <template>
-  <Table />
+  <Suspense timeout="0">
+    <template #default>
+      <Table />
+    </template>
+    <template #fallback>
+      Loading...
+    </template>
+  </Suspense>
 </template>
 
 <style>
