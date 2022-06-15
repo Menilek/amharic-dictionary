@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import { words } from "../words";
-import { ref, computed, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount, onMounted } from 'vue';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import { reject } from 'lodash';
@@ -33,6 +33,11 @@ const displayFavouriteStars = () => {
 
 onBeforeMount(() => {
   fetchFavourites();
+})
+
+onMounted(() => {
+  const searchInput = document.getElementById("search-input");
+  searchInput?.focus();
 })
 
 const wordOfInterest = ref({
@@ -76,7 +81,7 @@ const getImagePath = (isFavourite: boolean) => {
   const solidStar = new URL("../assets/star-solid.svg", import.meta.url);
   const emptyStar = new URL("../assets/star-regular.svg", import.meta.url);
   return isFavourite ? solidStar : emptyStar;
-}
+};
 
 const isAmharicWordPresent = (amharic: string) => {
   return favourites.value.find((e: Word) => e['amharic'] === amharic) ? true : false;
@@ -89,8 +94,9 @@ const toggleFavourite = (e: Event) => {
   interface WORD {
         english: string,
         amharic: string,
+        id: string
     }
-  const word = { english: wordObj[0].english, amharic: wordObj[0].amharic };
+  const word = { english: wordObj[0].english, amharic: wordObj[0].amharic, id: wordObj[0]._id };
   const isArrayAndEmpty = () => {
     return Array.isArray(favourites) && !favourites.value.length;
   };
@@ -122,7 +128,7 @@ const toggleFavourite = (e: Event) => {
     starImage.classList.add('far');
     starImage.src = `${getImagePath(false)}`;
   }
-}
+};
 
 // const getFavouriteIcon = (amharic: string) => {
 //   // if amharic in favourites
@@ -157,7 +163,7 @@ const viewWord = (e: Event) => {
 <template>
   <div class="dictionary-inputs">
     <div class="input-margin">
-      <input type="text" name="search-form" class="search-query" placeholder="Search for..." v-model="query" />
+      <input id="search-input" type="text" name="search-form" class="search-query" placeholder="Search for..." v-model="query" />
     </div>
     <div class="input-margin">
       <button class="btn btn-info" @click="toggleFavouriteColumn">{{ faveCol }} Favourites</button>
