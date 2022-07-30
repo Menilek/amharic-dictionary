@@ -205,7 +205,7 @@ const viewWord = (e: Event) => {
         </td>
         <td v-show='expanderCol === "Hide"' data-bs-toggle="modal" data-bs-target="#viewModal">
           <img @click="viewWord" :id="word._id"
-            class="fa-icon white-icon fa-solid fa-up-right-and-down-left-from-center"
+            class="fa-icon white-icon icon-action fa-solid fa-up-right-and-down-left-from-center"
             src="../assets/up-right-and-down-left-from-center-solid.svg" />
         </td>
         <td>{{ word.english }}</td>
