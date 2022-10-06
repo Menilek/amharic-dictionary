@@ -163,7 +163,7 @@ const viewWord = (e: Event) => {
 <template>
   <div class="dictionary-inputs">
     <div class="input-margin">
-      <input id="search-input" type="text" name="search-form" class="search-query" placeholder="Search for..." v-model="query" />
+      <input id="search-input" type="search" name="search-form" class="search-query" placeholder="Search for..." v-model="query" />
     </div>
     <div class="input-margin">
       <button class="btn btn-info" @click="toggleFavouriteColumn">{{ faveCol }} Favourites</button>
