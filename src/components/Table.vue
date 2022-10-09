@@ -11,6 +11,8 @@ import CsvModal from './modals/CsvModal.vue';
 import FavouriteModal from './modals/FavouriteModal.vue';
 import { getWords } from '../../utils/util'
 
+const favourites = ref();
+
 const wordsPayload = await getWords();
 const words = wordsPayload.data;
 
@@ -24,11 +26,10 @@ const fetchFavourites = () => {
   favourites.value = faves;
 };
 
-const displayFavouriteStars = () => {
+const displayFavouriteStars = (word: string, favourites: string) => {
   // if amharic in favourites
   // return solid star
   // else return regular star
-
 }
 
 onBeforeMount(() => {
@@ -55,8 +56,6 @@ const filteredWords = computed(() => {
     return word.english.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1 || word.amharic.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1;
   });
 });
-
-const favourites = ref();
 
 const faveCol = ref("Hide");
 const expanderCol = ref("Hide");
@@ -151,6 +150,9 @@ const getFavouriteClassNames = (amharic: string) => {
     return 'far fa-star';
   }
 }
+
+// can we dynamically create img urls for the favourite star?
+// const imgUrl = () => {}
 
 const viewWord = (e: Event) => {
   const img = e.currentTarget as HTMLImageElement;
@@ -251,5 +253,21 @@ const viewWord = (e: Event) => {
 
 .modal-text {
   color: white;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 10px;
+  background:
+    linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#000 45%,#000 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
+    linear-gradient(135deg, transparent 0%,transparent 43%,#000 45%,#000 55%,transparent 57%,transparent 100%);
+}
+
+input[type="search"]::-webkit-search-cancel-button:hover {
+  cursor: pointer;
 }
 </style>
