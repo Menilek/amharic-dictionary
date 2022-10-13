@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { submitWords } from '../../../utils/util';
 
 const csvInput = ref("");
 
 const wordArray = [] as any;
+
+const errorPresent = ref(false);
+const errorMessage = ref("");
+
+watch(csvInput, () => {
+    errorPresent.value = false;
+    errorMessage.value = "";
+})
 
 const validateInput = () => {
     const arrayInput = csvInput.value.split(/\r?\n/);
@@ -20,7 +28,7 @@ const validateInput = () => {
             }
             wordArray.push(entry);
         } else {
-            console.error("An inadequate number of words was submitted within the collection.")
+            errorMessage.value = "Ensure all four fields are populated";
             return;
         }
     })
@@ -30,12 +38,15 @@ const validateInput = () => {
 const submitInput = async () => {
     const validInput = validateInput();
     if (validInput) {
+        errorPresent.value = false;
         const res = await submitWords(wordArray);
-        console.log(res);
+        // if (res !== "200") {
+        //     errorPresent.value = true;
+        //     errorMessage.value = res
+        // }
     } else {
-        console.error("FAILED");
+        errorPresent.value = true;
     }
-    // report error and display it within the modal
 }
 </script>
 
@@ -49,8 +60,12 @@ const submitInput = async () => {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <h5 v-if="errorPresent">{{ errorMessage }}</h5>
+                    <h6 v-if="csvInput.length">English,Amharic,Geez,Category</h6>
+                    <h6 v-if="csvInput.length">Dog,Wusha,ዉሻ,Noun</h6>
                     <textarea rows="4" cols="35" name="csvText"
-                        placeholder="English,Amharic,Geez,Category&#10;Dog,Wusha,ዉሻ,Noun" v-model="csvInput"></textarea>
+                        placeholder="English,Amharic,Geez,Category&#10;Dog,Wusha,ዉሻ,Noun"
+                        v-model="csvInput"></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" @click="submitInput" class="btn btn-primary">Save</button>
