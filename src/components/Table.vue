@@ -173,7 +173,7 @@ const viewWord = (e: Event) => {
     </div>
     <div class="input-margin">
       <button class="btn btn-primary">Add Word</button>
-      <button class="btn btn-primary pad-left" data-bs-toggle="modal" data-bs-target="#csvModal">Add CSV</button>
+      <button class="btn btn-primary pad-left" data-bs-toggle="modal" data-bs-target="#csvModal">Bulk Upload</button>
     </div>
     <div class="input-margin">
       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#favouriteModal">Browse Favourites</button>
