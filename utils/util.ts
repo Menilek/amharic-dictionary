@@ -16,22 +16,10 @@ export const submitWords = async (words: unknown) => {
     const result = await fetch('https://dictionary-api-two.vercel.app/api/csv', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(words),
     })
-    // const result = await axios({
-    //   method: 'post',
-    //   url: 'http://localhost:3000/api/csv',
-    //   data: {
-    //     words
-    //   },
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Cache-Control': 'no-cache'
-    //   }
-    // });
     return result.status === 200;
   } catch (err) {
     console.error(err);
