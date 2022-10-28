@@ -9,6 +9,15 @@ export const getWords = async () => {
     }
 };
 
+export const getVerb = async () => {
+  try {
+    const res = await axios.get(`https://dictionary-api-two.vercel.app/api/verb`);
+    return res.data;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 // https://dictionary-api-two.vercel.app/api/csv
 // http://localhost:3000/api/csv
 export const submitWords = async (words: unknown) => {
