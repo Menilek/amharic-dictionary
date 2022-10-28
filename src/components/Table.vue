@@ -9,12 +9,25 @@ import { Word } from '@/types';
 import WordModal from './modals/WordModal.vue';
 import CsvModal from './modals/CsvModal.vue';
 import FavouriteModal from './modals/FavouriteModal.vue';
+import RandomModal from './modals/RandomModal.vue';
 import { getWords } from '../../utils/util'
 
 const favourites = ref();
 
 const wordsPayload = await getWords();
 const words = wordsPayload.data;
+
+const getVerbs = () => {
+  const verbs = []
+  for(const word of words) {
+    if (word.category === "Verb"){
+      verbs.push(word);
+    }
+  }
+  return verbs;
+}
+
+const verbs = getVerbs();
 
 //TODO: ADD SOLID STARS TO WORDS MARKED AS FAVOURITES
 const fetchFavourites = () => {
@@ -178,6 +191,9 @@ const viewWord = (e: Event) => {
     <div class="input-margin">
       <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#favouriteModal">Browse Favourites</button>
     </div>
+    <div class="input-margin">
+      <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#randomModal">Random Word</button>
+    </div>
   </div>
 
   <WordModal :word=wordOfInterest />
@@ -185,6 +201,8 @@ const viewWord = (e: Event) => {
   <CsvModal />
 
   <FavouriteModal :favourites=favourites />
+
+  <RandomModal :verbs="verbs" />
 
   <table class="table table-hover table-responsive table-striped table-sm">
     <thead>
