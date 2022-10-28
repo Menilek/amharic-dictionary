@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import { defineProps, PropType } from "vue";
-
-interface WORD {
-  english: string,
-  amharic: string,
-  geez: string,
-  category: string,
-  _id: string
-}
+import { Word } from '@/types';
 
 const props = defineProps({
   word: {
     required: true,
-    type: Object as PropType<WORD>
+    type: Object as PropType<Word>
   }
 })
 </script>
