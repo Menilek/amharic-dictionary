@@ -12,6 +12,12 @@ import { Word } from '@/types';
   const amharicVerb = ref("");
   const englishVerb = ref("");
 
+  const showEnglish = ref(false);
+
+  const revealEnglish = () => {
+    showEnglish.value = !showEnglish.value;
+  }
+
   const clearVerbs = () => {
     amharicVerb.value = "";
     englishVerb.value = "";
@@ -42,8 +48,9 @@ getRandomVerb();
                 </div>
                 <div class="modal-body">
                     <h2>{{ amharicVerb }}</h2>
-                    <h4>{{ englishVerb }}</h4>
+                    <h4 v-if="showEnglish">{{ englishVerb }}</h4>
                 </div>
+                <button type="button" class="btn btn-success btn-lg btn-block" @click="revealEnglish">{{ showEnglish ? 'Hide English' : 'Reveal English' }}</button>
                 <button type="button" class="btn btn-primary btn-lg btn-block" @click="getRandomVerb">Get New Word</button>
             </div>
         </div>
