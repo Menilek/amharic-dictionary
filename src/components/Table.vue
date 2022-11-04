@@ -10,6 +10,7 @@ import WordModal from './modals/WordModal.vue';
 import CsvModal from './modals/CsvModal.vue';
 import FavouriteModal from './modals/FavouriteModal.vue';
 import RandomModal from './modals/RandomModal.vue';
+import QuizModal from './modals/QuizModal.vue';
 import { getWords } from '../../utils/util'
 
 const favourites = ref();
@@ -193,6 +194,7 @@ const viewWord = (e: Event) => {
     </div>
     <div class="input-margin">
       <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#randomModal">Random Word</button>
+      <button class="btn btn-danger pad-left" data-bs-toggle="modal" data-bs-target="#quizModal">Quiz</button>
     </div>
   </div>
 
@@ -203,6 +205,8 @@ const viewWord = (e: Event) => {
   <FavouriteModal :favourites=favourites />
 
   <RandomModal :verbs="verbs" />
+
+  <QuizModal :verbs="verbs" />
 
   <table class="table table-hover table-responsive table-striped table-sm">
     <thead>
