@@ -17,18 +17,43 @@ const favourites = ref();
 
 const wordsPayload = await getWords();
 const words = wordsPayload.data;
+const numOfWords = words.length;
+const searchPlaceholder = `Search ${numOfWords} words for...`;
 
-const getVerbs = () => {
-  const verbs = []
+
+let currentWordset = words;
+
+const getWordsByCategory = (category: string) => {
+  const categorisedWords = []
   for(const word of words) {
-    if (word.category === "Verb"){
-      verbs.push(word);
+    if (word.category === category){
+      categorisedWords.push(word);
     }
   }
-  return verbs;
+  return categorisedWords;
 }
 
-const verbs = getVerbs();
+const verbs = getWordsByCategory("Verb");
+// BELOW IS CATEGORY FEATURE - WIP
+// const nouns = getWordsByCategory("Noun");
+// const adverbs = getWordsByCategory("Adverb");
+// const adjectives = getWordsByCategory("Adjective");
+// const prepositions = getWordsByCategory("Preposition");
+// const phrases = getWordsByCategory("Phrase");
+// const conjunctions = getWordsByCategory("Conjunction");
+// const prnouns = getWordsByCategory("Pronoun");
+// const slangWords = getWordsByCategory("Slang");
+// const unknownWords = getWordsByCategory("Unknown");
+
+// const clickCategoryRadioBtn = (e: Event) => {
+//   const radioBtn = e.currentTarget as HTMLInputElement;
+//   const wordSet = radioBtn.id;
+//   console.log(wordSet);
+//   if(wordSet === "All") {
+//     currentWordset = words;
+//   }
+//   currentWordset = wordSet;
+// }
 
 //TODO: ADD SOLID STARS TO WORDS MARKED AS FAVOURITES
 const fetchFavourites = () => {
@@ -66,7 +91,7 @@ const wordOfInterest = ref({
 const query = ref("");
 
 const filteredWords = computed(() => {
-  return words.filter((word: Word) => {
+  return currentWordset.filter((word: Word) => {
     return word.english.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1 || word.amharic.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1;
   });
 });
@@ -179,7 +204,7 @@ const viewWord = (e: Event) => {
 <template>
   <div class="dictionary-inputs">
     <div class="input-margin">
-      <input id="search-input" type="search" name="search-form" class="search-query" placeholder="Search for..." v-model="query" />
+      <input id="search-input" type="search" name="search-form" class="search-query" :placeholder="searchPlaceholder" v-model="query" />
     </div>
     <div class="input-margin">
       <button class="btn btn-info" @click="toggleFavouriteColumn">{{ faveCol }} Favourites</button>
@@ -196,6 +221,41 @@ const viewWord = (e: Event) => {
       <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#randomModal">Random Word</button>
       <button class="btn btn-danger pad-left" data-bs-toggle="modal" data-bs-target="#quizModal">Quiz</button>
     </div>
+
+    <!-- <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="All" autocomplete="off" checked="true">
+      <label class="btn btn-outline-primary" for="All">All</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Noun" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Noun">Noun</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Verb" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Verb">Verb</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Adverb" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Adverb">Adverb</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Adjective" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Adjective">Adjective</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Preposition" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Preposition">Preposition</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Phrase" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Phrase">Phrase</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Conjugation" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Conjugation">Conjunction</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Pronoun" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Pronoun">Pronoun</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Slang" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Slang">Slang</label>
+
+      <input @click="clickCategoryRadioBtn" type="radio" class="btn-check" name="btnradio" id="Unknown" autocomplete="off" checked="">
+      <label class="btn btn-outline-primary" for="Unknown">Unknown</label>
+    </div> -->
   </div>
 
   <WordModal :word=wordOfInterest />
