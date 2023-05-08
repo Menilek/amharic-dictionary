@@ -331,15 +331,17 @@ const viewWord = (e: Event) => {
       <tr>
         <th v-show="faveCol === 'Hide'">
           <img
-            class="fa-icon gold-star fas fa-star"
+            class="fa-icon gold-star fas fa-star icon-action"
             src="../assets/star-solid.svg"
             alt="Star icon"
+            @click="toggleFavouriteColumn"
           />
         </th>
         <th v-show="expanderCol === 'Hide'">
           <img
-            class="fa-icon white-icon fa-solid fa-eye"
+            class="fa-icon white-icon fa-solid fa-eye icon-action"
             src="../assets/eye-solid.svg"
+            @click="toggleExpander"
           />
         </th>
         <th scope="col">English</th>
