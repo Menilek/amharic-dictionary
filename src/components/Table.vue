@@ -1,37 +1,35 @@
 <script setup lang="ts">
 // import { words } from "../words";
-import { ref, computed, onBeforeMount, onMounted } from 'vue';
+import { ref, computed, onBeforeMount, onMounted } from "vue";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
-import { reject } from 'lodash';
+import { reject } from "lodash";
 import { Modal } from "bootstrap";
-import { Word } from '@/types';
-import WordModal from './modals/WordModal.vue';
-import CsvModal from './modals/CsvModal.vue';
-import FavouriteModal from './modals/FavouriteModal.vue';
-import RandomModal from './modals/RandomModal.vue';
-import QuizModal from './modals/QuizModal.vue';
-import { getWords } from '../../utils/util'
+import { Word } from "@/types";
+import WordModal from "./modals/WordModal.vue";
+import CsvModal from "./modals/CsvModal.vue";
+import FavouriteModal from "./modals/FavouriteModal.vue";
+import RandomModal from "./modals/RandomModal.vue";
+import QuizModal from "./modals/QuizModal.vue";
+import { getWords } from "../../utils/util";
 
 const favourites = ref();
 
 const wordsPayload = await getWords();
 const words = wordsPayload.data;
-const numOfWords = words.length;
-const searchPlaceholder = `Search ${numOfWords} words for...`;
-
+const searchPlaceholder = `Search ${words.length} words for...`;
 
 let currentWordset = words;
 
 const getWordsByCategory = (category: string) => {
-  const categorisedWords = []
-  for(const word of words) {
-    if (word.category === category){
+  const categorisedWords = [];
+  for (const word of words) {
+    if (word.category === category) {
       categorisedWords.push(word);
     }
   }
   return categorisedWords;
-}
+};
 
 const verbs = getWordsByCategory("Verb");
 // BELOW IS CATEGORY FEATURE - WIP
@@ -57,7 +55,7 @@ const verbs = getWordsByCategory("Verb");
 
 //TODO: ADD SOLID STARS TO WORDS MARKED AS FAVOURITES
 const fetchFavourites = () => {
-  const localFavourites = localStorage.getItem('Favourites') as string;
+  const localFavourites = localStorage.getItem("Favourites") as string;
   let faves = JSON.parse(localFavourites);
   if (faves === null) {
     faves = [];
@@ -69,30 +67,35 @@ const displayFavouriteStars = (word: string, favourites: string) => {
   // if amharic in favourites
   // return solid star
   // else return regular star
-}
+};
 
 onBeforeMount(() => {
   fetchFavourites();
-})
+});
 
 onMounted(() => {
   const searchInput = document.getElementById("search-input");
   searchInput?.focus();
-})
+});
 
 const wordOfInterest = ref({
   amharic: "",
   category: "",
   english: "",
   geez: "",
-  _id: ""
+  _id: "",
 });
 
 const query = ref("");
 
 const filteredWords = computed(() => {
   return currentWordset.filter((word: Word) => {
-    return word.english.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1 || word.amharic.toString().toLowerCase().indexOf(query.value.toLowerCase()) > -1;
+    return (
+      word.english.toString().toLowerCase().indexOf(query.value.toLowerCase()) >
+        -1 ||
+      word.amharic.toString().toLowerCase().indexOf(query.value.toLowerCase()) >
+        -1
+    );
   });
 });
 
@@ -101,19 +104,19 @@ const expanderCol = ref("Hide");
 
 const toggleFavouriteColumn = () => {
   if (faveCol.value === "Show") {
-    faveCol.value = "Hide"
+    faveCol.value = "Hide";
   } else {
-    faveCol.value = "Show"
+    faveCol.value = "Show";
   }
-}
+};
 
 const toggleExpander = () => {
   if (expanderCol.value === "Show") {
-    expanderCol.value = "Hide"
+    expanderCol.value = "Hide";
   } else {
-    expanderCol.value = "Show"
+    expanderCol.value = "Show";
   }
-}
+};
 
 const getImagePath = (isFavourite: boolean) => {
   const solidStar = new URL("../assets/star-solid.svg", import.meta.url);
@@ -122,48 +125,59 @@ const getImagePath = (isFavourite: boolean) => {
 };
 
 const isAmharicWordPresent = (amharic: string) => {
-  return favourites.value.find((e: Word) => e['amharic'] === amharic) ? true : false;
+  return favourites.value.find((e: Word) => e["amharic"] === amharic)
+    ? true
+    : false;
 };
 
 const toggleFavourite = (e: Event) => {
   const starImage = e.currentTarget as HTMLImageElement;
-  const starID = starImage.getAttribute('id');
-  const wordObj = words.filter((word: { _id: string|null; }) => word._id === starID);
+  const starID = starImage.getAttribute("id");
+  const wordObj = words.filter(
+    (word: { _id: string | null }) => word._id === starID
+  );
   interface WORD {
-        english: string,
-        amharic: string,
-        id: string
-    }
-  const word = { english: wordObj[0].english, amharic: wordObj[0].amharic, id: wordObj[0]._id };
+    english: string;
+    amharic: string;
+    id: string;
+  }
+  const word = {
+    english: wordObj[0].english,
+    amharic: wordObj[0].amharic,
+    id: wordObj[0]._id,
+  };
   const isArrayAndEmpty = () => {
     return Array.isArray(favourites) && !favourites.value.length;
   };
 
   let wordPresent = isAmharicWordPresent(word.amharic);
-  console.log(wordPresent)
+  // console.log(wordPresent)
   if (!wordPresent) {
     const newFavourites = (favourites: Array<WORD>) => favourites.concat(word);
     const newFaves = newFavourites(favourites.value);
     // generateFavouriteHeader(newFaves.length);
     favourites.value = newFaves;
     const favouritesString = JSON.stringify(newFaves);
-    localStorage.setItem('Favourites', favouritesString);
+    localStorage.setItem("Favourites", favouritesString);
   } else {
-    let newFaves = reject(favourites.value, (fave: Word) => fave['amharic'] === word['amharic']);
+    let newFaves = reject(
+      favourites.value,
+      (fave: Word) => fave["amharic"] === word["amharic"]
+    );
     // generateFavouriteHeader(newFaves.length);
     favourites.value = [...newFaves];
     const favouritesString = JSON.stringify(newFaves);
-    localStorage.setItem('Favourites', favouritesString);
+    localStorage.setItem("Favourites", favouritesString);
   }
 
   const classList = starImage.classList;
-  if (classList.contains('far')) {
-    starImage.classList.remove('far');
-    starImage.classList.add('fas');
+  if (classList.contains("far")) {
+    starImage.classList.remove("far");
+    starImage.classList.add("fas");
     starImage.src = `${getImagePath(true)}`;
   } else {
-    starImage.classList.remove('fas');
-    starImage.classList.add('far');
+    starImage.classList.remove("fas");
+    starImage.classList.add("far");
     starImage.src = `${getImagePath(false)}`;
   }
 };
@@ -184,42 +198,86 @@ const toggleFavourite = (e: Event) => {
 const getFavouriteClassNames = (amharic: string) => {
   //far fa-star
   if (isAmharicWordPresent(amharic)) {
-    return 'fas fa-star';
+    return "fas fa-star";
   } else {
-    return 'far fa-star';
+    return "far fa-star";
   }
-}
+};
 
 // can we dynamically create img urls for the favourite star?
 // const imgUrl = () => {}
 
 const viewWord = (e: Event) => {
   const img = e.currentTarget as HTMLImageElement;
-  const wordID = img.getAttribute('id');
-  const wordObj = words.filter((word: { _id: string|null; }) => word._id === wordID);
+  const wordID = img.getAttribute("id");
+  const wordObj = words.filter(
+    (word: { _id: string | null }) => word._id === wordID
+  );
   wordOfInterest.value = wordObj[0];
-}
+};
 </script>
 
 <template>
+  <div>
+    <ul class="nav nav-pills">
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link"
+          data-bs-toggle="dropdown"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="true"
+        >
+          <img
+            class="fa-icon white-icon fa-solid fa-bars"
+            src="../assets/bars-solid.svg"
+          />
+        </a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" @click="toggleFavouriteColumn"
+            >{{ faveCol }} Favourites</a
+          >
+          <a class="dropdown-item" @click="toggleExpander"
+            >{{ expanderCol }} Expander</a
+          >
+          <a
+            class="dropdown-item"
+            data-bs-toggle="modal"
+            data-bs-target="#csvModal"
+            >Add Words</a
+          >
+          <a
+            class="dropdown-item"
+            data-bs-toggle="modal"
+            data-bs-target="#favouriteModal"
+            >Favourites</a
+          >
+          <a
+            class="dropdown-item"
+            data-bs-toggle="modal"
+            data-bs-target="#randomModal"
+            >Random Word</a
+          >
+          <a
+            class="dropdown-item"
+            data-bs-toggle="modal"
+            data-bs-target="#quizModal"
+            >Quiz</a
+          >
+        </div>
+      </li>
+    </ul>
+  </div>
   <div class="dictionary-inputs">
     <div class="input-margin">
-      <input id="search-input" type="search" name="search-form" class="search-query" :placeholder="searchPlaceholder" v-model="query" />
-    </div>
-    <div class="input-margin">
-      <button class="btn btn-info" @click="toggleFavouriteColumn">{{ faveCol }} Favourites</button>
-      <button class="btn btn-info pad-left" @click="toggleExpander">{{ expanderCol }} Expander</button>
-    </div>
-    <div class="input-margin">
-      <button class="btn btn-primary">Add Word</button>
-      <button class="btn btn-primary pad-left" data-bs-toggle="modal" data-bs-target="#csvModal">Bulk Upload</button>
-    </div>
-    <div class="input-margin">
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#favouriteModal">Browse Favourites</button>
-    </div>
-    <div class="input-margin">
-      <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#randomModal">Random Word</button>
-      <button class="btn btn-danger pad-left" data-bs-toggle="modal" data-bs-target="#quizModal">Quiz</button>
+      <input
+        id="search-input"
+        type="search"
+        name="search-form"
+        class="search-query"
+        :placeholder="searchPlaceholder"
+        v-model="query"
+      />
     </div>
 
     <!-- <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
@@ -258,11 +316,11 @@ const viewWord = (e: Event) => {
     </div> -->
   </div>
 
-  <WordModal :word=wordOfInterest />
+  <WordModal :word="wordOfInterest" />
 
   <CsvModal />
 
-  <FavouriteModal :favourites=favourites />
+  <FavouriteModal :favourites="favourites" />
 
   <RandomModal :verbs="verbs" />
 
@@ -271,11 +329,18 @@ const viewWord = (e: Event) => {
   <table class="table table-hover table-responsive table-striped table-sm">
     <thead>
       <tr>
-        <th v-show='faveCol === "Hide"'>
-          <img class="fa-icon gold-star fas fa-star" src="../assets/star-solid.svg" alt="Star icon" />
+        <th v-show="faveCol === 'Hide'">
+          <img
+            class="fa-icon gold-star fas fa-star"
+            src="../assets/star-solid.svg"
+            alt="Star icon"
+          />
         </th>
-        <th v-show='expanderCol === "Hide"'>
-          <img class="fa-icon white-icon fa-solid fa-eye" src="../assets/eye-solid.svg" />
+        <th v-show="expanderCol === 'Hide'">
+          <img
+            class="fa-icon white-icon fa-solid fa-eye"
+            src="../assets/eye-solid.svg"
+          />
         </th>
         <th scope="col">English</th>
         <th scope="col">Amharic</th>
@@ -283,14 +348,26 @@ const viewWord = (e: Event) => {
     </thead>
     <tbody v-for="word in filteredWords" :key="word._id">
       <tr class="table-active">
-        <td v-show='faveCol === "Hide"'>
-          <img @click="toggleFavourite" :id="word._id" class="fa-icon star-icon white-icon icon-action far fa-star"
-            src="../assets/star-regular.svg" alt="Star icon" />
+        <td v-show="faveCol === 'Hide'">
+          <img
+            @click="toggleFavourite"
+            :id="word._id"
+            class="fa-icon star-icon white-icon icon-action far fa-star"
+            src="../assets/star-regular.svg"
+            alt="Star icon"
+          />
         </td>
-        <td v-show='expanderCol === "Hide"' data-bs-toggle="modal" data-bs-target="#viewModal">
-          <img @click="viewWord" :id="word._id"
+        <td
+          v-show="expanderCol === 'Hide'"
+          data-bs-toggle="modal"
+          data-bs-target="#viewModal"
+        >
+          <img
+            @click="viewWord"
+            :id="word._id"
             class="fa-icon white-icon icon-action fa-solid fa-up-right-and-down-left-from-center"
-            src="../assets/up-right-and-down-left-from-center-solid.svg" />
+            src="../assets/up-right-and-down-left-from-center-solid.svg"
+          />
         </td>
         <td>{{ word.english }}</td>
         <td>{{ word.amharic }}</td>
@@ -301,7 +378,8 @@ const viewWord = (e: Event) => {
 
 <style scoped>
 .gold-star {
-  filter: invert(83%) sepia(44%) saturate(1278%) hue-rotate(356deg) brightness(98%) contrast(106%);
+  filter: invert(83%) sepia(44%) saturate(1278%) hue-rotate(356deg)
+    brightness(98%) contrast(106%);
 }
 
 .fa-icon {
@@ -310,7 +388,8 @@ const viewWord = (e: Event) => {
 }
 
 .white-icon {
-  filter: invert(100%) sepia(4%) saturate(18%) hue-rotate(144deg) brightness(104%) contrast(100%);
+  filter: invert(100%) sepia(4%) saturate(18%) hue-rotate(144deg)
+    brightness(104%) contrast(100%);
 }
 
 .icon-action {
@@ -344,9 +423,24 @@ input[type="search"]::-webkit-search-cancel-button {
   width: 12px;
   height: 12px;
   margin-left: 10px;
-  background:
-    linear-gradient(45deg, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 43%,#000 45%,#000 55%,rgba(0,0,0,0) 57%,rgba(0,0,0,0) 100%),
-    linear-gradient(135deg, transparent 0%,transparent 43%,#000 45%,#000 55%,transparent 57%,transparent 100%);
+  background: linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0) 43%,
+      #000 45%,
+      #000 55%,
+      rgba(0, 0, 0, 0) 57%,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(
+      135deg,
+      transparent 0%,
+      transparent 43%,
+      #000 45%,
+      #000 55%,
+      transparent 57%,
+      transparent 100%
+    );
 }
 
 input[type="search"]::-webkit-search-cancel-button:hover {
