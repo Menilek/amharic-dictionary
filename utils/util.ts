@@ -29,7 +29,7 @@ export const submitWords = async (words: unknown) => {
       },
       body: JSON.stringify(words),
     })
-    return result.status === 200;
+    return result;
   } catch (err) {
     console.error(err);
     return err;
