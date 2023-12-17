@@ -23,7 +23,7 @@ const props = defineProps({
           <table class="table">
             <thead>
               <th>Amharic</th>
-              <th>Ge'ez</th>
+              <th>አማሪኛ</th>
               <th>Category</th>
               <th>Edit</th>
               <th>Delete</th>
