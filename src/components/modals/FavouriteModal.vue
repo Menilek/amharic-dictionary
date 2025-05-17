@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType } from "vue";
+import { PropType } from "vue";
   import { Word } from '../../types';
 
   const props = defineProps({
@@ -22,14 +22,18 @@ import { defineProps, PropType } from "vue";
                 <div class="modal-body">
                     <table class="table">
                         <thead>
-                            <th>#</th>
-                            <th>English</th>
-                            <th>Amharic</th>
+                            <tr>
+                                <th>#</th>
+                                <th>English</th>
+                                <th>Amharic</th>
+                            </tr>
                         </thead>
                         <tbody v-for="word in favourites" :key="word._id">
-                            <td>{{ favourites.indexOf(word) + 1 }}</td>
-                            <td>{{ word.english }}</td>
-                            <td>{{ word.amharic }}</td>
+                            <tr>
+                                <td>{{ favourites.indexOf(word) + 1 }}</td>
+                                <td>{{ word.english }}</td>
+                                <td>{{ word.amharic }}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType, ref } from "vue";
+import { PropType, ref } from "vue";
 import { Word } from '@/types';
 
   const props = defineProps({

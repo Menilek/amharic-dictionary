@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, PropType } from "vue";
+import { PropType } from "vue";
 import { Word } from '@/types';
 
 const props = defineProps({
@@ -22,22 +22,26 @@ const props = defineProps({
         <div class="modal-body">
           <table class="table">
             <thead>
-              <th>Amharic</th>
-              <th>አማሪኛ</th>
-              <th>Category</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <tr>
+                <th>Amharic</th>
+                <th>አማሪኛ</th>
+                <th>Category</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
             </thead>
             <tbody>
-              <td>{{ props.word.amharic }}</td>
-              <td>{{ props.word.geez }}</td>
-              <td>{{ props.word.category }}</td>
-              <td>
-                <img class="fa-icon white-icon fa-solid fa-pen-to-square" src="../../assets/pen-to-square-solid.svg" />
-              </td>
-              <td>
-                <img class="fa-icon white-icon fas fa-trash-alt" src="../../assets/trash-alt-solid.svg" />
-              </td>
+              <tr>
+                <td>{{ props.word.amharic }}</td>
+                <td>{{ props.word.geez }}</td>
+                <td>{{ props.word.category }}</td>
+                <td>
+                  <img class="fa-icon white-icon fa-solid fa-pen-to-square" src="../../assets/pen-to-square-solid.svg" />
+                </td>
+                <td>
+                  <img class="fa-icon white-icon fas fa-trash-alt" src="../../assets/trash-alt-solid.svg" />
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
