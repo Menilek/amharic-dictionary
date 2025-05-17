@@ -9,9 +9,9 @@ import Table from './components/Table.vue'
     </template>
     <template #fallback>
       <div class="loading-div">
-        <h1 id="big-font">ገና አልዚጊጅም</h1>
-        <h2>Gena alzigijum</h2>
-        <h3>Not ready yet</h3>
+        <h1 id="big-font">አንድ ሰከንድ</h1>
+        <h2>And second</h2>
+        <h3>One Second</h3>
       </div>
     </template>
   </Suspense>
