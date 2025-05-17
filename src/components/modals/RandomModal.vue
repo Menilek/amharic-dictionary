@@ -28,7 +28,6 @@ import { Word } from '@/types';
     const max = props.verbs.length;
     const randomNumber = Math.floor(Math.random() * max);
     const randomVerb = props.verbs[randomNumber];
-    console.log(randomVerb)
     amharicVerb.value = randomVerb.amharic;
     englishVerb.value = randomVerb.english;
   }
